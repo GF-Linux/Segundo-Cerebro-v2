@@ -1,0 +1,68 @@
+#* O que NUNCA entra neste repositorio. Escrito ANTES do primeiro `git add` (PADRAO §8·S1).
+#! POR QUE ANTES: `.gitignore` nao desrastreia o que ja esta no indice. O cerebro anterior
+#!   aprendeu isso na pratica (decisao llm-local/0011: o repo subiu publico porque o ignore
+#!   veio depois do rastreio) e mesmo assim ficou com 205 sequencias rastreadas sob uma pasta
+#!   ignorada. Esta e a unica janela barata. Depois dela, so reescrita de historia.
+
+# ---------- SEQUENCIAMENTO: nem uma. Regra da cabeca, sem excecao. ----------
+*.ab1
+*.abi
+*.scf
+*.fasta
+*.fastq
+*.fa
+*.afa
+*.seq
+*.phy
+*.nex
+*.trprobs
+*.tstat
+*.vstat
+*.tre
+novas sequencias maris/
+
+# ---------- BINARIO E DADO: este repo e so texto. ----------
+*.zip
+*.tar
+*.tar.gz
+*.pdf
+*.docx
+*.odt
+*.xlsx
+*.parquet
+*.pkl
+*.jpg
+*.jpeg
+*.png
+*.mov
+*.mp4
+*.exe
+*.so
+*.pyc
+__pycache__/
+.venv*/
+
+#? Excecao unica: docs/fluxo.png e a planta (§11 exige as duas formas).
+!docs/fluxo.png
+
+# ---------- CODIGO DE OUTRO PROJETO ----------
+#! O cerebro DOCUMENTA projeto; ele nao HOSPEDA projeto. O anterior carregava 83 .py de
+#!   estudo, um repo de terceiro vendorizado e um .code-workspace.
+*.py
+*.ts
+*.cs
+*.ipynb
+*.code-workspace
+
+# ---------- DOCUMENTO PESSOAL (D2) ----------
+#! Definicao: nota cujo dano, se vazasse, cai sobre uma PESSOA e nao sobre um projeto.
+comandos-pessoais.md
+pessoal/
+estagio-ecs/
+
+# ---------- CONFIG DE FERRAMENTA ----------
+.claude/
+.obsidian/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,4 @@
+#* Trata todo conteudo como texto e recusa diff binario. Guarda de apoio ao .gitignore.
+* text=auto eol=lf
+*.md diff=markdown
+docs/fluxo.png binary
