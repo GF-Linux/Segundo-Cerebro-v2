@@ -70,7 +70,7 @@ perna "P4 · nada proibido entrou (§8·S1)" bash -c '
   #!   consigo mesma. Um portao que reprova a propria documentacao e um medidor que mente.
   #! O BURACO QUE ISSO ABRE e fechado aqui: docs/ e um conjunto FECHADO de 4 arquivos. Nao
   #!   da para esconder nota nova ali dentro.
-  esperado="diario.md fluxo.md fluxo.png portao.md"
+  esperado="diario.md fluxo.md fluxo.png fluxo.svg portao.md"
   achado=$(ls -1 docs/ 2>/dev/null | sort | tr "\n" " " | sed "s/ $//")
   [ "$achado" = "$esperado" ] && : || m "docs/ mudou de conjunto: esperado [$esperado], achado [$achado]"
   [ $r -eq 0 ] && echo "P4 OK — nenhuma sequencia, binario, codigo, credencial ou PII rastreada"; exit $r'
