@@ -5,30 +5,28 @@ humano no terminal, por maquina pelo frontmatter, e no Obsidian pelos wikilinks.
 
 ## Como se le, em tres passos
 
-```
+
 1. INDEX.md                        uma linha por projeto     (~20 linhas, GERADO)
 2. projetos/<slug>/projeto.md      identidade                (teto 30 linhas)
    projetos/<slug>/agora.md        onde parei                (teto 25 linhas)
 3. projetos/<slug>/sessoes/…       a sessao mais recente
-```
 
-Custa **menos de 3.000 tokens** por projeto, e o portao reprova se passar disso. No
-cerebro anterior o mesmo caminho custava **58.594** — `INDEX.md` tinha 402 linhas e um
-`status.md` chegou a 804, num molde que pedia "Estado geral (1 frase)".
+
 
 Para saber o que ainda vale num projeto: `ferramentas/vigentes.sh <slug>`.
 
 ## O que NUNCA entra aqui
 
 | classe | por que |
-|---|---|
-| **sequencia** (`.ab1`, `.fasta`, `.fa`, …) | nem uma. Sao dados reais de terceiros, nao publicados |
-| **binario** (zip, pdf, docx, xlsx, imagem) | este repo e texto. O binario mora no disco, com o caminho anotado na nota |
-| **codigo de outro projeto** | o cerebro DOCUMENTA projeto; nao HOSPEDA projeto |
-| **documento pessoal** | a nota cujo dano, se vazasse, cai sobre uma PESSOA e nao sobre um projeto |
-| **credencial, IP roteavel, numero de documento** | redigidos no lugar: a nota entra, o valor vira marcador |
 
-As cinco linhas sao **travadas pela perna P4 do portao**, nao confiadas a disciplina.
+1. **sequencia** (`.ab1`, `.fasta`, `.fa`, …) | nem uma. Sao dados reais de terceiros, nao publicados |
+2. **binario** (zip, pdf, docx, xlsx, imagem) | este repo e texto. O binario mora no disco, com o caminho anotado na nota |
+3. **codigo de outro projeto** | o cerebro DOCUMENTA projeto; nao HOSPEDA projeto |
+4. **documento pessoal** | a nota cujo dano, se vazasse, cai sobre uma PESSOA e nao sobre um projeto |
+5. **credencial, IP roteavel, numero de documento** | redigidos no lugar: a nota entra, o valor vira marcador |
+6. **Pastas e projetos | repositorio puramente pessoal com objetivo de manter o contexto das sessoes
+
+
 
 ## A forma de uma nota
 

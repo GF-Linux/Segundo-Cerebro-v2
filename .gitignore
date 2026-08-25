@@ -66,6 +66,11 @@ __pycache__/
 comandos-pessoais.md
 pessoal/
 estagio-ecs/
+docs/
+projetos/
+meta/
+transversal/
+moldes/
 
 # ---------- CONFIG DE FERRAMENTA ----------
 .claude/
