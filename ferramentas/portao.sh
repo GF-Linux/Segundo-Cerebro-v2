@@ -92,8 +92,11 @@ perna "P6 · ALVO DA CORRIDA: orientar em <= 3.000 tokens" bash -c '
   r=0; pior=0; pnome=""
   for d in projetos/*/; do
     p=$(basename "$d"); [ -f "$d/projeto.md" ] || continue
-    u=$(ls -1 "$d"sessoes/*.md 2>/dev/null | sort | tail -1)
-    b=$(cat INDEX.md "$d/projeto.md" "$d/agora.md" $u 2>/dev/null | wc -c)
+    #! O caminho barato e INDEX + projeto + agora, e NAO inclui a sessao. A sessao saiu
+    #!   porque agora.md passou a carregar o estado — era ela que estourava o orcamento
+    #!   (design-de-sistemas: 5.080 tokens, com uma sessao fundida de 283 linhas). Manter a
+    #!   sessao no caminho seria pagar duas vezes pela mesma informacao.
+    b=$(cat INDEX.md "$d/projeto.md" "$d/agora.md" 2>/dev/null | wc -c)
     t=$(( b * 10 / 36 ))
     printf "   %-26s %6d tokens\n" "$p" "$t"
     [ "$t" -gt "$pior" ] && { pior=$t; pnome=$p; }
