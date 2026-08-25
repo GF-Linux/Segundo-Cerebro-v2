@@ -1,8 +1,14 @@
-#? PARA LER — o que ficou esperando decisão do Jared 25/08/2026
-#!
-#! 1. Escrito porque ele pediu: *"amanhã vou ler com calma o documento dessa run
-#!    e decidir o que fazer. Deixe anotado para me lembrar."*
-#! 2. Apagar quando as decisões estiverem tomadas.
+---
+tipo: meta
+projeto: meta
+data: 2026-08-25
+status: vigente
+tags: [pendencias, migracao]
+---
+
+<!-- Escrito a pedido do Jared: ler com calma e decidir. Apagar quando as decisões
+     estiverem tomadas. O cabeçalho `#?` da primeira versão era a convenção do §4.1,
+     que é de ARQUIVO DE CÓDIGO — este repositório exige frontmatter, e a P1 me pegou. -->
 
 # O que esperar de você, e onde ler
 
