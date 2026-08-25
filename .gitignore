@@ -54,6 +54,13 @@ __pycache__/
 *.ipynb
 *.code-workspace
 
+#? Excecao UNICA e escopada: `ferramentas/` e o CLI deste proprio repositorio — as pernas
+#?   do portao e o migrador. A proibicao acima existe para barrar codigo de OUTRO projeto
+#?   (o cerebro anterior hospedava 83 .py de estudo e um repo de terceiro vendorizado).
+#?   Ferramenta do proprio repo nao e isso, e versiona-la e o que torna a migracao auditavel.
+!ferramentas/*.py
+!ferramentas/*.sh
+
 # ---------- DOCUMENTO PESSOAL (D2) ----------
 #! Definicao: nota cujo dano, se vazasse, cai sobre uma PESSOA e nao sobre um projeto.
 comandos-pessoais.md

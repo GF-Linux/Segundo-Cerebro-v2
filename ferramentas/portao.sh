@@ -50,19 +50,28 @@ perna "P4 · nada proibido entrou (§8·S1)" bash -c '
   [ -n "$s" ] && m "SEQUENCIA RASTREADA: $(wc -l <<<"$s") arquivo(s)"
   b=$(git ls-files | grep -Ei "\.(zip|pdf|docx|odt|xlsx|parquet|pkl|pyc|so|exe|jpe?g|mov|mp4)$" || true)
   [ -n "$b" ] && m "BINARIO RASTREADO: $(wc -l <<<"$b")"
-  p=$(git ls-files | grep -Ei "\.(py|ts|cs|ipynb)$" || true)
+  #! Escopado a "fora de ferramentas/": ver a excecao no .gitignore.
+  p=$(git ls-files | grep -Ei "\.(py|ts|cs|ipynb)$" | grep -v "^ferramentas/" || true)
   [ -n "$p" ] && m "CODIGO DE OUTRO PROJETO: $(wc -l <<<"$p")"
-  c=$(git grep -lE "(ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|ssh-rsa AAAA|BEGIN [A-Z ]*PRIVATE KEY|xox[baprs]-)" -- "*.md" 2>/dev/null || true)
+  c=$(git grep -lE "(ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|ssh-rsa AAAA|BEGIN [A-Z ]*PRIVATE KEY|xox[baprs]-)" -- "*.md" ":(exclude)docs/" 2>/dev/null || true)
   [ -n "$c" ] && m "CREDENCIAL: $c"
-  x=$(git grep -lE "[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" -- "*.md" 2>/dev/null || true)
+  x=$(git grep -lE "[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" -- "*.md" ":(exclude)docs/" 2>/dev/null || true)
   [ -n "$x" ] && m "CPF: $x"
-  t=$(git grep -lE "\(?[0-9]{2}\)? ?9[0-9]{4}-[0-9]{4}" -- "*.md" 2>/dev/null || true)
+  t=$(git grep -lE "\(?[0-9]{2}\)? ?9[0-9]{4}-[0-9]{4}" -- "*.md" ":(exclude)docs/" 2>/dev/null || true)
   [ -n "$t" ] && m "TELEFONE: $t"
-  g=$(git grep -lE "\bRG\b.{0,20}[0-9]{2}[.-]?[0-9]{3}" -- "*.md" 2>/dev/null || true)
+  g=$(git grep -lE "\bRG\b.{0,20}[0-9]{2}[.-]?[0-9]{3}" -- "*.md" ":(exclude)docs/" 2>/dev/null || true)
   [ -n "$g" ] && m "NUMERO DE IDENTIDADE: $g"
-  i=$(git grep -hoE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" -- "*.md" 2>/dev/null \
+  i=$(git grep -hoE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" -- "*.md" ":(exclude)docs/" 2>/dev/null \
       | grep -vE "^(0\.0\.0\.0|127\.0\.0\.1|1\.2\.3\.4|255\.|192\.0\.2\.|198\.51\.100\.|203\.0\.113\.)" | sort -u || true)
   [ -n "$i" ] && m "IP ROTEAVEL: $(wc -l <<<"$i") distinto(s)"
+  #! docs/ fica FORA das varreduras de padrao acima, e a razao e estrutural: docs/portao.md
+  #!   contem os PROPRIOS regexes desta perna dentro de um bloco de codigo, entao ela casa
+  #!   consigo mesma. Um portao que reprova a propria documentacao e um medidor que mente.
+  #! O BURACO QUE ISSO ABRE e fechado aqui: docs/ e um conjunto FECHADO de 4 arquivos. Nao
+  #!   da para esconder nota nova ali dentro.
+  esperado="diario.md fluxo.md fluxo.png portao.md"
+  achado=$(ls -1 docs/ 2>/dev/null | sort | tr "\n" " " | sed "s/ $//")
+  [ "$achado" = "$esperado" ] && : || m "docs/ mudou de conjunto: esperado [$esperado], achado [$achado]"
   [ $r -eq 0 ] && echo "P4 OK — nenhuma sequencia, binario, codigo, credencial ou PII rastreada"; exit $r'
 
 perna "P5 · teto de tamanho na camada que se le SEMPRE" bash -c '

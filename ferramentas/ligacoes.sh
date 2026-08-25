@@ -7,8 +7,8 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-find . -name '*.md' -not -path './.git/*' -not -path './moldes/*' | sed 's|^\./||' | sort > /tmp/.cv2_notas.$$
-grep -rhoE '\[\[[^]|#]+' --include='*.md' . --exclude-dir=.git --exclude-dir=moldes \
+find . -name '*.md' -not -path './.git/*' -not -path './moldes/*' -not -path './docs/*' | sed 's|^\./||' | sort > /tmp/.cv2_notas.$$
+grep -rhoE '\[\[[^]|#]+' --include='*.md' . --exclude-dir=.git --exclude-dir=moldes --exclude-dir=docs \
   | sed 's/^\[\[//' | sed 's|[[:space:]]*$||' | sort -u > /tmp/.cv2_alvos.$$
 
 q=0; ok=0
@@ -19,7 +19,7 @@ while IFS= read -r alvo; do
     ok=$((ok+1))
   else
     q=$((q+1)); echo "QUEBRADO: [[$alvo]]"
-    grep -rlF "[[$alvo]]" --include='*.md' . --exclude-dir=.git --exclude-dir=moldes | sed 's/^/    citado em: /'
+    grep -rlF "[[$alvo]]" --include='*.md' . --exclude-dir=.git --exclude-dir=moldes --exclude-dir=docs | sed 's/^/    citado em: /'
   fi
 done < /tmp/.cv2_alvos.$$
 rm -f /tmp/.cv2_notas.$$ /tmp/.cv2_alvos.$$
