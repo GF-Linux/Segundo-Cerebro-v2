@@ -21,9 +21,10 @@ done < <(find . -name '*.md' -not -path './.git/*' -not -path './moldes/*' -not 
 #! Lista de EXCECAO auditavel: alvos que ja estavam quebrados na FONTE. Conserta-los exigiria
 #!   INVENTAR o destino, e a lei manda recusar antes de fabricar. Sao reportados como
 #!   herdados e nao reprovam — mas qualquer alvo FORA da lista reprova, entao "herdado" nao
-#!   vira porta dos fundos. A lista e uma nota versionada: meta/ligacoes-herdadas.md.
-grep -oE '^- `[^`]+`' meta/ligacoes-herdadas.md 2>/dev/null \
-  | sed 's/^- `//;s/`$//' | sort -u > /tmp/.cv2_herd.$$ || : > /tmp/.cv2_herd.$$
+#!   vira porta dos fundos. Os dados moram em ferramentas/ (que o migrador NAO
+#!   reconstroi); a nota legivel em meta/ e gerada a partir deles.
+cut -f1 ferramentas/ligacoes-herdadas.txt 2>/dev/null \
+  | grep -v '^#' | sort -u > /tmp/.cv2_herd.$$ || : > /tmp/.cv2_herd.$$
 
 q=0; ok=0; herd=0
 while IFS= read -r alvo; do
@@ -41,7 +42,7 @@ done < /tmp/.cv2_alvos.$$
 rm -f /tmp/.cv2_notas.$$ /tmp/.cv2_alvos.$$ /tmp/.cv2_herd.$$
 
 if [ "$q" -eq 0 ]; then
-  echo "P2 OK — 0 quebrados NOVOS de $((ok+herd)) alvos ($herd herdados, em meta/ligacoes-herdadas.md)"
+  echo "P2 OK — 0 quebrados NOVOS de $((ok+herd)) alvos ($herd herdados, ver meta/ligacoes-herdadas)"
   exit 0
 fi
 echo "P2 FALHOU — $q alvo(s) quebrado(s) NOVO(S), fora dos $herd herdados"; exit 1

@@ -1,0 +1,24 @@
+# Os UNICOS enderecos IPv4 que podem aparecer em texto neste repositorio.
+# Uma linha = um regex ancorado (ERE). Linha com # e comentario.
+#
+# ESTE ARQUIVO E LIDO POR DOIS PROGRAMAS: `migrar.py` (que redige) e `portao.sh`
+# (perna P4, que reprova). Ele existe porque as duas listas ja estiveram separadas —
+# uma em Python, outra em bash — e DISCORDARAM: o redator liberava a faixa de bridge
+# de container e o portao a proibia, entao 3 enderecos passaram pela redacao e foram
+# barrados no portao. Duas listas que precisam concordar sempre acabam divergindo.
+#
+# Tudo que nao casar aqui e REDIGIDO. Inclusive faixa privada: endereco de Tailscale
+# e estavel por maquina e identifica o dono, e a decisao 0064 do proprio autor manda
+# manter IP fora do versionamento.
+^0\.0\.0\.0$
+^127\.0\.0\.1$
+^255\.[0-9]+\.[0-9]+\.[0-9]+$
+# faixas de DOCUMENTACAO (RFC 5737) — existem para aparecer em texto
+^192\.0\.2\.[0-9]+$
+^198\.51\.100\.[0-9]+$
+^203\.0\.113\.[0-9]+$
+# valores obviamente ficticios usados como exemplo nas proprias notas
+^1\.2\.3\.4$
+^5\.5\.5\.5$
+^6\.6\.6\.6$
+^10\.9\.9\.9$

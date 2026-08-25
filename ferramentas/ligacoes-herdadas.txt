@@ -1,0 +1,17 @@
+# Wikilinks que JA estavam quebrados na fonte. <alvo>TAB<causa>.
+# Lido pela perna P2 (ferramentas/ligacoes.sh) e pelo migrador, que gera a nota em meta/.
+# Mora aqui, e nao em meta/, porque o migrador reconstroi meta/ do zero a cada corrida —
+# e quando esta lista morava la, uma corrida a apagou e a perna P2 reprovou 12 alvos que
+# ela mesma ja tinha classificado como herdados.
+../../	caminho relativo escrito a mao, sem alvo
+0020-y	exemplo generico dentro de uma decisao (x e y como placeholders)
+0021-x	exemplo generico dentro de uma decisao (x e y como placeholders)
+../dados/monteiro-2017-cap15	aponta para um .yaml de `atlas/dados/` — dado, nao nota; nao entra num repo so de texto
+../dados/nosala-2017-review.yaml	idem: `.yaml` de dados
+decisoes/0009-memoria-auditavel-da-fern	decisao que nunca foi escrita — a nota promete e o arquivo nao existe
+decisoes/0020-tres-direcoes-de-telao-para-aprovacao.md	idem, e ainda com `.md` no alvo
+../../formacao-python/...	reticencias literais: o autor deixou o alvo por completar
+oficina-carregar-nao-e-aparecer	nota de memoria do Claude Code, que vive fora do cerebro
+study-help-correction-points-only	nota de outro sistema, nunca existiu aqui
+../../transversal/	aponta para a PASTA, nao para uma nota
+../../verboo — memória Claude Code	nota de memoria do Claude Code, fora do cerebro

@@ -64,8 +64,12 @@ RESUMO = {
 #! REDACAO NO LUGAR (D2): a nota entra, o VALOR vira marcador. Apagar a nota do RG apagaria
 #!   junto a decisao sobre o deposito de patente. O valor e descartavel; o registro do
 #!   porque, nao. Nenhum valor real e impresso por este script, nem em log.
-IP_OK = re.compile(r'^(0\.0\.0\.0|127\.0\.0\.1|1\.2\.3\.4|10\.9\.9\.9|255\.\d+\.\d+\.\d+'
-                   r'|172\.18\.0\.\d+|192\.0\.2\.\d+|198\.51\.100\.\d+|203\.0\.113\.\d+)$')
+#! A lista de excecao mora em UM arquivo, lido tambem pelo portao. Ela ja esteve duplicada
+#!   em Python e em bash, as duas discordaram, e 3 enderecos passaram pela redacao para serem
+#!   barrados no portao. Lista que precisa concordar com outra sempre diverge.
+_PERM = [l.strip() for l in (Path(__file__).parent/'ips-permitidos.txt').read_text(encoding='utf-8').split('\n')
+         if l.strip() and not l.startswith('#')]
+IP_OK = re.compile('|'.join(_PERM))
 RE_IP  = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b')
 RE_RG  = re.compile(r'(\bRG\b[^0-9\n]{0,24})(`?\d{2}[.\-]?\d{3}[.\-]?\d{3}[-\dXx]*`?)')
 RE_CPF = re.compile(r'\b\d{3}\.\d{3}\.\d{3}-\d{2}\b')
@@ -430,6 +434,35 @@ def main():
         '     .gitignore exclui. -->\n\n' +
         reescrever_links(lei.lstrip('\n')) + '\n', encoding='utf-8')
     cont['meta'] += 4
+
+    # ---- a nota legivel das ligacoes herdadas, gerada dos dados ----
+    #! A NOTA e gerada; os DADOS moram em ferramentas/ligacoes-herdadas.txt. Quando a lista
+    #!   morava em meta/, uma corrida do migrador a apagou (meta/ e reconstruido do zero) e a
+    #!   perna P2 reprovou 12 alvos que ela mesma ja tinha classificado como herdados.
+    lh = Path(__file__).parent/'ligacoes-herdadas.txt'
+    if lh.exists():
+        itens = [l.split('\t') for l in lh.read_text(encoding='utf-8').split('\n')
+                 if l.strip() and not l.startswith('#')]
+        (DESTINO/'meta'/'ligacoes-herdadas.md').write_text(
+            frontmatter('meta', 'meta', '2026-08-25', 'vigente', '[herdado, migracao]') +
+            '# Ligacoes herdadas quebradas\n\n'
+            'Estes wikilinks **ja estavam quebrados no cerebro anterior**. A migracao nao os\n'
+            'criou e nao os consertou: consertar exigiria **inventar o alvo**, e inventar alvo\n'
+            'e fabricar procedencia.\n\n'
+            'A perna P2 le esta lista e trata estes alvos como herdados — reporta e nao reprova.\n'
+            'Qualquer alvo quebrado **fora** dela reprova o portao. E o que impede que "herdado"\n'
+            'vire porta dos fundos.\n\n'
+            f'## Os {len(itens)} alvos, e por que cada um nao resolve\n\n'
+            + '\n'.join(f'- `{a}` — {b}' for a, b in itens) +
+            '\n\n## O que fazer com eles — decisao da cabeca\n\n'
+            '| opcao | custo |\n|---|---|\n'
+            '| **(a) deixar como esta** | o grafo segue com pontas soltas; nao piora, nao melhora |\n'
+            '| **(b) escrever as notas que faltam** | duas sao decisoes que a prosa PROMETE e que nunca existiram — escreve-las recupera conhecimento perdido |\n'
+            '| **(c) tirar o colchete** | resolve o portao e apaga a intencao do autor de ligar aquilo |\n\n'
+            '**O que eu faria:** (b) para as duas decisoes prometidas, porque a falta delas e um\n'
+            'buraco de conhecimento real; (a) para o resto, que e placeholder, caminho de dado ou\n'
+            'nota de outro sistema. **Nao fiz nenhuma das duas: a escolha e sua.**\n', encoding='utf-8')
+        cont['meta'] += 1
 
     print('── migracao ──')
     for k in sorted(cont): print(f'  {k:34} {cont[k]}')

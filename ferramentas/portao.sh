@@ -61,8 +61,9 @@ perna "P4 · nada proibido entrou (§8·S1)" bash -c '
   [ -n "$t" ] && m "TELEFONE: $t"
   g=$(git grep -lE "\bRG\b.{0,20}[0-9]{2}[.-]?[0-9]{3}" -- "*.md" ":(exclude)docs/" 2>/dev/null || true)
   [ -n "$g" ] && m "NUMERO DE IDENTIDADE: $g"
+  #! Le a MESMA lista que o redator (ferramentas/ips-permitidos.txt). Ver o cabecalho dela.
   i=$(git grep -hoE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" -- "*.md" ":(exclude)docs/" 2>/dev/null \
-      | grep -vE "^(0\.0\.0\.0|127\.0\.0\.1|1\.2\.3\.4|255\.|192\.0\.2\.|198\.51\.100\.|203\.0\.113\.)" | sort -u || true)
+      | grep -vEf <(grep -v "^#" ferramentas/ips-permitidos.txt | grep -v "^$") | sort -u || true)
   [ -n "$i" ] && m "IP ROTEAVEL: $(wc -l <<<"$i") distinto(s)"
   #! docs/ fica FORA das varreduras de padrao acima, e a razao e estrutural: docs/portao.md
   #!   contem os PROPRIOS regexes desta perna dentro de um bloco de codigo, entao ela casa
@@ -106,9 +107,26 @@ perna "P6 · ALVO DA CORRIDA: orientar em <= 3.000 tokens" bash -c '
   [ $r -eq 0 ] && echo "P6 OK — todos dentro do orcamento"; exit $r'
 
 perna "P7 · conduta: o protocolo de leitura responde (§12·4c)" bash -c '
-  alvo=$(ls -d projetos/*/ 2>/dev/null | head -1); alvo=$(basename "${alvo:-x}")
-  [ -d "projetos/$alvo" ] || { echo "   nenhum projeto para provar vida"; exit 1; }
-  ferramentas/portao.sh --conduta "$alvo"'
+  #! TODO projeto tem o `codigo:` conferido, nao so um. O defeito F5 — 23 notas apontando
+  #!   para uma maquina Windows que nao existe mais — era do REPOSITORIO, nao de um projeto.
+  #!   Uma perna que amostra um projeto so deixaria 13 ponteiros sem ninguem perguntando.
+  r=0
+  for d in projetos/*/; do
+    p=$(basename "$d"); [ -f "$d/projeto.md" ] || continue
+    cam=$(awk "NR>1{if(\$0==\"---\")exit; if(/^codigo:/){sub(/^codigo:[[:space:]]*/,\"\");print;exit}}" "$d/projeto.md")
+    case "$cam" in
+      "(nao existe ainda)"|"(nao aplicavel)"|"(nao localizado)")
+        printf "   %-26s %s — declarado, aceito\n" "$p" "$cam" ;;
+      "") printf "   %-26s SEM campo codigo:\n" "$p"; r=1 ;;
+      *) if [ -e "$cam" ]; then printf "   %-26s existe\n" "$p"
+         else printf "   %-26s PONTEIRO MORTO: %s\n" "$p" "$cam"; r=1; fi ;;
+    esac
+  done
+  #* E a prova de vida completa no projeto mais documentado.
+  maior=$(for d in projetos/*/; do echo "$(ls $d/decisoes/*.md 2>/dev/null | wc -l) $(basename $d)"; done | sort -rn | head -1 | cut -d" " -f2)
+  echo "   --- prova de vida completa em: $maior"
+  ferramentas/portao.sh --conduta "$maior" | sed "s/^/   /" || r=1
+  exit $r'
 
 echo; echo "═══════════════════════════════════"
 [ "$falhas" -eq 0 ] && { echo "PORTAO VERDE — 7/7 pernas"; exit 0; }
