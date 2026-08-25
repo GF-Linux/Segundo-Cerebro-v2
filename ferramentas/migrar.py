@@ -178,6 +178,88 @@ def partir_status(txt):
         (datados[dt] if atual == 'datado' and dt else resto).append(linha)
     return datados, resto
 
+
+LEI = """# A lei deste repositorio
+
+Este e o protocolo: o que se le ao abrir uma sessao, o que se escreve ao fechar, e as
+regras que o portao trava.
+
+## Ao ABRIR a sessao — o caminho barato
+
+1. `INDEX.md` — **uma linha por PROJETO** (~20 linhas). Nao e um indice de notas.
+2. `projetos/<slug>/projeto.md` — identidade: o que e, o produto atual, onde o codigo vive.
+3. `projetos/<slug>/agora.md` — o estado e o proximo passo.
+
+Sao os tres, e so os tres. Custa menos de 3.000 tokens, e a perna P6 do portao reprova se
+passar disso. **A sessao NAO esta neste caminho**: o `agora.md` carrega o estado; a sessao
+se abre quando o detalhe for preciso.
+
+Para saber o que ainda vale: `ferramentas/vigentes.sh <slug>`.
+
+## Durante a sessao
+
+Quando uma **decisao relevante** for tomada — rumo, licenca, escopo, arquitetura, algo que o
+eu-do-futuro precisara saber o porque — crie
+`projetos/<slug>/decisoes/NNNN-verbo-objeto.md` a partir de `moldes/decisao.md`.
+
+**Append-only.** Para mudar uma decisao, crie OUTRA que referencie a antiga e marque a
+antiga `status: revisada-por [[NNNN-...]]`.
+
+> **Nunca apague a decisao revogada.** Ela e o unico lugar onde o *porque nao* esta escrito.
+> Um log append-only sem os revogados vira lista de ordens sem motivo.
+
+## Ao FECHAR a sessao
+
+1. `projetos/<slug>/sessoes/AAAA-MM-DD.md` a partir de `moldes/sessao.md`.
+   **Uma por projeto por dia.** Se ja existe a do dia, acrescente nela.
+   O frontmatter nasce `status: historico` — fato datado nao se revoga.
+2. **Reescreva** `projetos/<slug>/agora.md`. Nao acrescente: reescreva. Teto de 25 linhas.
+   Tarefa que nao couber vai para `tarefas.md`, que fica fora do caminho de leitura.
+3. `ferramentas/indice.sh` — o `INDEX.md` e **gerado**. Nunca digitado.
+4. Se algo cruzar projetos, atualize `transversal/`.
+5. `ferramentas/portao.sh` — sem as 7 pernas verdes, nao se commita.
+
+## As regras que o portao trava
+
+- **Toda nota tem frontmatter** — `tipo`, `projeto`, `data`, `status`, `tags`. Sem excecao.
+- **Todo wikilink resolve.** Os ja quebrados na fonte estao listados em
+  [[meta/ligacoes-herdadas]]; qualquer novo reprova.
+- **O `INDEX.md` e gerado**, e o portao reprova se o disco divergir do gerado.
+- **Nada de sequencia, binario, codigo de outro projeto, credencial, IP roteavel ou numero
+  de documento.** Redacao no lugar: a nota entra, o valor vira marcador.
+- **Teto** de 25 linhas no `agora.md` e 30 no `projeto.md` — sao os lidos em toda sessao.
+- **O campo `codigo:`** de cada `projeto.md` e testado com `test -e`. Ponteiro morto reprova.
+
+## O que este repositorio NAO e
+
+Ele **documenta** projeto; ele nao **hospeda** projeto. Codigo, dado, imagem e PDF moram no
+disco, e a nota anota o caminho.
+"""
+
+DECISAO_0010 = """# 0010 - O protocolo mudou junto com a forma
+
+**Decisao:** reescrever o protocolo de leitura e escrita em vez de copiar o da fonte.
+
+**Contexto / porque:** o protocolo anterior morava em `.claude/skills/segundo-cerebro/
+SKILL.md` — pasta de config, que o `.gitignore` exclui, entao **a lei do repositorio nao
+era versionada**. Pior: ela instruia com nomes que esta migracao matou.
+
+| o que a lei velha mandava | por que nao serve mais |
+|---|---|
+| *"Ler o `projetos/<ativo>/status.md`"* | `status.md` nao existe. Virou `agora.md` (teto 25) + `tarefas.md` |
+| *"Atualizar `projetos/<proj>/status.md`"* | idem — e era o arquivo sem teto que chegou a **804 linhas** |
+| *"a partir de `templates/decisao.md`"* | a pasta chama-se `moldes/` |
+| *"**Adicionar uma linha em `INDEX.md`** para cada nota nova"* | o indice e **gerado**. Foi o passo manual que perdeu **50 de 341 notas** |
+| *"`INDEX.md` (mapa de 1 linha por nota)"* | agora e uma linha por **PROJETO**. Foi assim que ele chegou a 402 linhas |
+
+**Consequencias:** copiar a lei velha teria posto no repositorio novo um documento que
+**manda recriar exatamente os dois defeitos que a migracao consertou** — e ele e o primeiro
+arquivo que uma sessao le. O texto original fica abaixo, na integra: a decisao precisa
+mostrar o que foi trocado, e nada se perde.
+
+**Relacionadas:** [[meta/lei]] · [[meta/decisoes/0008-index-rebaixado-a-arquivo-de-dados]]
+"""
+
 def main():
     cont = defaultdict(int)
     for d in ['projetos', 'transversal', 'meta']:
@@ -424,15 +506,24 @@ def main():
             frontmatter('tarefas', 'meta', '2026-08-25', 'vigente') +
             '# Tarefas — meta\n\n' + redigir(reescrever_links('\n'.join(resto_m).strip('\n')), cont) + '\n',
             encoding='utf-8')
+    #! A LEI E REESCRITA, nao copiada — e este e o achado mais perigoso da corrida.
+    #!   O protocolo da fonte instruia com nomes que esta migracao matou: mandava ler e
+    #!   atualizar `status.md`, usar `templates/`, e **adicionar uma linha em INDEX.md para
+    #!   cada nota nova**. Sao exatamente as duas falhas que a migracao consertou (o status
+    #!   sem teto que chegou a 804 linhas, e o indice a mao que perdeu 50 de 341 notas).
+    #!   Copiar a lei velha teria posto no repositorio novo um documento que MANDA recriar
+    #!   os defeitos — e ele e o primeiro que uma sessao le.
+    #! O texto original vai INTEIRO para o corpo da decisao 0010, porque a decisao precisa
+    #!   mostrar o que foi trocado. Nada se perde.
     skill = FONTE/'.claude'/'skills'/'segundo-cerebro'/'SKILL.md'
-    lei = sem_frontmatter(skill.read_text(encoding='utf-8'))[1] if skill.exists() else ''
+    lei_velha = sem_frontmatter(skill.read_text(encoding='utf-8'))[1].strip() if skill.exists() else ''
     (DESTINO/'meta'/'lei.md').write_text(
-        frontmatter('meta', 'meta', '2026-08-25', 'vigente') +
-        '# A lei deste repositorio\n\n'
-        '<!-- Veio de .claude/skills/segundo-cerebro/SKILL.md, que era config de ferramenta e\n'
-        '     portanto nao versionavel. O protocolo de leitura nao pode morar num lugar que o\n'
-        '     .gitignore exclui. -->\n\n' +
-        reescrever_links(lei.lstrip('\n')) + '\n', encoding='utf-8')
+        frontmatter('meta', 'meta', '2026-08-25', 'vigente') + LEI, encoding='utf-8')
+    (DESTINO/'meta'/'decisoes'/'0010-o-protocolo-mudou-junto-com-a-forma.md').write_text(
+        frontmatter('decisao', 'meta', '2026-08-25', 'vigente', '[protocolo, migracao]') +
+        DECISAO_0010 + '\n\n## O protocolo anterior, na integra\n\n```markdown\n' +
+        lei_velha + '\n```\n', encoding='utf-8')
+    cont['meta'] += 1
     cont['meta'] += 4
 
     # ---- a nota legivel das ligacoes herdadas, gerada dos dados ----
